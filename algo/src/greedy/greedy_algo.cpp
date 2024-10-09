@@ -138,15 +138,7 @@ TimeDiagram construct_time_schedule(ScheduleData &schedule,
             chosen_task = schedule.GC1(D);
         }
         LOG_TRACE << "GC1 chosen " << chosen_task;
-        ScheduleData::Proc chosen_proc;
-        switch (conf.criteria) {
-        case extra_criteria::NO:
-            chosen_proc = time_schedule.GC2(chosen_task);
-            break;
-        case extra_criteria::CR:
-            chosen_proc = partitioning[chosen_task];
-            break;
-        }
+        ScheduleData::Proc chosen_proc = partitioning[chosen_task];
 
         LOG_TRACE << "GC2 chosen " << chosen_proc;
         time_schedule.add_task(chosen_task, chosen_proc);
@@ -281,16 +273,9 @@ TimeDiagram greedy_EDF_heuristic(ScheduleData &sched, opts::greedy_config conf) 
                 }
             }
         }
-        // } else if (conf.criteria == extra_criteria::BF) {
-        //     std::tie(partitioning, std::ignore) =
-        //         part_graph(csr, sched.base_data.proc_num, 30,
-        //         proc_time_vector);
-    } else {
-        LOG_INFO << "NO/BF criteria - not generating partition";
     }
 
-    if ((conf._class == input_class::class_general) &&
-        (conf.criteria == extra_criteria::CR)) {
+    if (conf._class == input_class::class_general) {
         LOG_INFO << "balancing";
 
         partitioning = local_partition_optimization(partitioning, sched, conf);
@@ -393,13 +378,7 @@ TimeDiagram greedy_EDF_heuristic(ScheduleData &sched, opts::greedy_config conf) 
     double last_ratio = it_counter / (double)it_counter_max;
 
     for (const ScheduleData::Task &cur : order) {
-        ScheduleData::Proc chosen_proc;
-
-        switch (conf.criteria) {
-        case extra_criteria::CR:
-            chosen_proc = partitioning[cur];
-            break;
-        }
+        ScheduleData::Proc chosen_proc = partitioning[cur];
 
         // LOG_INFO << "adding task " << cur << " to proc " << chosen_proc;
         res.add_task(cur, chosen_proc);
