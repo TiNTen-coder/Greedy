@@ -86,6 +86,7 @@ std::tuple<std::vector<std::size_t>, uint64_t>
 part_graph(CSR &csr, std::size_t num_parts, std::uint64_t ufactor,
            std::vector<std::size_t> first_row) {
     static unsigned long seed = time(nullptr);
+    //srand(42);
     BOOST_LOG_NAMED_SCOPE("part_graph");
     idx_t nvexes = csr.xadj.size() - 1;
     idx_t ncon = 1;
@@ -94,11 +95,12 @@ part_graph(CSR &csr, std::size_t num_parts, std::uint64_t ufactor,
     std::unique_ptr<idx_t[]> part(new idx_t[nvexes]);
     LOG_DEBUG << "nvexes: " << nvexes << "; ncon: " << ncon
               << "; nparts: " << nparts;
-    //randomize();
+    //std::randomize();
     idx_t m_options[METIS_NOPTIONS];
     METIS_SetDefaultOptions(m_options);
     m_options[METIS_OPTION_UFACTOR] = ufactor;
-    m_options[METIS_OPTION_SEED] = seed;
+    //m_options[METIS_OPTION_SEED] = seed;
+    m_options[METIS_OPTION_SEED] = 42;
     std::vector<idx_t> vweights(first_row.begin(), first_row.end());
     if (nparts > 8) {
         METIS_PartGraphRecursive(
