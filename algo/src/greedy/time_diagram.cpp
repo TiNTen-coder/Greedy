@@ -95,12 +95,10 @@ TimeDiagram::test_add_task(greedy::ScheduleData::Task task,
     add_task_internal(task, proc, expected_start);
     auto res_CR = calculate_CR();
     auto res_CR2 = calculate_CR2();
-    auto res_BF = calculate_BF();
     remove_task(task);
     return {.starting_place = expected_start,
             .resulting_CR = res_CR,
             .resulting_CR2 = res_CR2,
-            .resulting_BF = res_BF,
             .expected_finish =
                 expected_start + sched.get_task_time(proc, task)};
 }
@@ -215,86 +213,6 @@ greedy::ScheduleData::Proc TimeDiagram::GC2_CR_simple(greedy::ScheduleData::Task
         ->first;
 }
 
-greedy::ScheduleData::Proc TimeDiagram::GC2_BF_simple(greedy::ScheduleData::Task task,
-                                                   double C1, double C2) {
-    std::vector<precalc_info> precalc;
-    std::transform(boost::counting_iterator<std::size_t>(0),
-                   boost::counting_iterator<std::size_t>(proc_array.size()),
-                   std::back_inserter(precalc),
-                   [&](std::size_t i) { return test_add_task(task, i); });
-    std::size_t max_time =
-        std::max_element(precalc.begin(), precalc.end(),
-                         [](const precalc_info &a, const precalc_info &b) {
-                             return a.expected_finish < b.expected_finish;
-                         })
-            ->expected_finish;
-    std::vector<double> normalized_times;
-    std::transform(precalc.begin(), precalc.end(),
-                   std::back_inserter(normalized_times),
-                   [max_time](const precalc_info &cur_elem) {
-                       return cur_elem.expected_finish / (double)max_time;
-                   });
-    std::vector<std::pair<greedy::ScheduleData::Proc, double>> times;
-    auto tied_it = boost::combine(precalc, normalized_times);
-    std::transform(
-        tied_it.begin(), tied_it.end(),
-        boost::counting_iterator<std::size_t>(0), std::back_inserter(times),
-        [C1, C2](const auto &vals, std::size_t num) {
-            precalc_info inf;
-            double time;
-            boost::tie(inf, time) = vals;
-            return std::make_pair(num, C1 * time + C2 * inf.resulting_BF);
-        });
-    return std::min_element(
-               times.begin(), times.end(),
-               [](const auto &a, const auto &b) { return a.second < b.second; })
-        ->first;
-}
-
-greedy::ScheduleData::Proc TimeDiagram::GC2_BF_access(greedy::ScheduleData::Task task,
-                                                   double n) {
-    BOOST_LOG_NAMED_SCOPE("GC2_BF_access");
-    using precalc_table = std::pair<greedy::ScheduleData::Proc, precalc_info>;
-    std::vector<precalc_table> task_table;
-    std::transform(boost::counting_iterator<std::size_t>(0),
-                   boost::counting_iterator<std::size_t>(proc_array.size()),
-                   std::back_inserter(task_table), [&](std::size_t i) {
-                       return std::make_pair(i, test_add_task(task, i));
-                   });
-
-    auto best_bf = std::min_element(
-        task_table.begin(), task_table.end(), [](const auto &a, const auto &b) {
-            return a.second.resulting_BF < b.second.resulting_BF;
-        });
-
-    if (best_bf->second.resulting_BF > 10) {
-        return best_bf->first;
-    }
-
-    std::sort(task_table.begin(), task_table.end(),
-              [](const auto &a, const auto &b) {
-                  return a.second.expected_finish < b.second.expected_finish;
-              });
-
-    unsigned int task_thresh = std::ceil(proc_array.size() * n);
-
-    std::vector<precalc_table> best_by_gc(task_table.begin(),
-                                          task_table.begin() + task_thresh);
-
-    std::sort(best_by_gc.begin(), best_by_gc.end(),
-              [](const auto &a, const auto &b) {
-                  return a.second.resulting_BF < b.second.resulting_BF;
-              });
-
-    task_thresh = std::ceil(best_by_gc.size() * n);
-    return std::min_element(
-               best_by_gc.begin(), best_by_gc.begin() + task_thresh,
-               [](const auto &a, const auto &b) {
-                   return a.second.resulting_BF < b.second.resulting_BF;
-               })
-        ->first;
-}
-
 greedy::ScheduleData::Proc TimeDiagram::GC2_CR_access(greedy::ScheduleData::Task task,
                                                    double n) {
     BOOST_LOG_NAMED_SCOPE("GC2_CR_access");
@@ -341,24 +259,6 @@ greedy::ScheduleData::Proc TimeDiagram::GC2_CR_access(greedy::ScheduleData::Task
                    return a.second.resulting_CR < b.second.resulting_CR;
                })
         ->first;
-}
-
-double TimeDiagram::calculate_BF() const {
-    BOOST_LOG_NAMED_SCOPE("calculate_BF");
-    auto max_tasks =
-        std::max_element(proc_array.begin(), proc_array.end(),
-                         [](const proc_info &a, const proc_info &b) {
-                             return a.size() < b.size();
-                         })
-            ->size();
-    size_t amount_of_tasks =
-        std::accumulate(proc_array.begin(), proc_array.end(), 0,
-                        [](std::size_t a, const proc_info &b) {
-                            return std::move(a) + b.size();
-                        });
-    double BF =
-        100 * ((max_tasks * proc_array.size() / (double)amount_of_tasks) - 1);
-    return std::ceil(BF);
 }
 
 double TimeDiagram::calculate_CR() const {
@@ -413,7 +313,6 @@ std::vector<TimeDiagram::proc_info> &TimeDiagram::get_schedule() {
 
 Output_data TimeDiagram::extract_data(const opts::greedy_config &conf) const {
     Output_data res;
-    res.BF = calculate_BF();
     res.CR = calculate_CR();
     res.CR2 = calculate_CR2();
     res.criteria = conf.criteria;

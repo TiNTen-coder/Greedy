@@ -15,7 +15,6 @@ base_config parse_base_config(toml::value &data) {
     base_config res;
     std::string criteria = toml::find<std::string>(data, "criteria");
     boost::describe::enum_from_string(criteria.c_str(), res.criteria);
-    res.BF_bound = toml::find<double>(data, "BF_bound");
     res.CR_bound = toml::find<double>(data, "CR_bound");
     res.CR2_bound = toml::find<double>(data, "CR2_bound");
     std::string input_class = toml::find<std::string>(data, "inp_class");

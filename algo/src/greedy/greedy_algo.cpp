@@ -146,17 +146,6 @@ TimeDiagram construct_time_schedule(ScheduleData &schedule,
         case extra_criteria::CR:
             chosen_proc = partitioning[chosen_task];
             break;
-        case extra_criteria::BF:
-            switch (conf.scheme) {
-            case GC2_scheme::access:
-                chosen_proc =
-                    time_schedule.GC2_BF_access(chosen_task, conf.threshold);
-                break;
-            case GC2_scheme::simple:
-                chosen_proc = time_schedule.GC2_BF_simple(chosen_task, 0, 1);
-                break;
-            }
-            break;
         }
 
         LOG_TRACE << "GC2 chosen " << chosen_proc;
@@ -169,8 +158,7 @@ TimeDiagram construct_time_schedule(ScheduleData &schedule,
             if (ratio - last_ratio > 0.01) {
                 LOG_DEBUG << "Progress: " << ratio * 100 << "%";
                 LOG_DEBUG << "CR: " << time_schedule.calculate_CR()
-                          << "; CR2: " << time_schedule.calculate_CR2()
-                          << "; BF: " << time_schedule.calculate_BF();
+                          << "; CR2: " << time_schedule.calculate_CR2();
                 last_ratio = ratio;
             }
         }
@@ -410,19 +398,6 @@ TimeDiagram greedy_EDF_heuristic(ScheduleData &sched, opts::greedy_config conf) 
         switch (conf.criteria) {
         case extra_criteria::CR:
             chosen_proc = partitioning[cur];
-            break;
-        case extra_criteria::BF:
-            switch (conf.scheme) {
-            case GC2_scheme::access:
-                chosen_proc = res.GC2_BF_access(cur, conf.threshold);
-                break;
-            case GC2_scheme::simple:
-                chosen_proc = res.GC2_BF_simple(cur, 0, 1);
-                break;
-            }
-            break;
-        case extra_criteria::NO:
-            chosen_proc = res.GC2(cur);
             break;
         }
 

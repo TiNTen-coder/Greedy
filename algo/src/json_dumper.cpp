@@ -30,7 +30,6 @@ void dump_to_json(const std::string &filename, const Output_data &out_data,
     root["start_times"] = out_data.start_times;
     root["criteria"] = boost::describe::enum_to_string(out_data.criteria, "");
     root["CR"] = out_data.CR;
-    root["BF"] = out_data.BF;
     root["CR2"] = out_data.CR2;
     root["nodes"] = std::accumulate(
         diagram.begin(), diagram.end(), 0,

@@ -19,20 +19,6 @@ namespace opts {
  * @param s Generalised input data
  * @retval double Partition `BF` value
  */
-double calculate_partitioned_BF(const std::vector<std::size_t> &partitioning,
-                                const greedy::ScheduleData &s) {
-    BOOST_LOG_NAMED_SCOPE("calculate_BF");
-    std::vector<std::size_t> am_of_tasks_on_proc(s.proc_num);
-    std::fill(am_of_tasks_on_proc.begin(), am_of_tasks_on_proc.end(), 0);
-    std::for_each(partitioning.begin(), partitioning.end(),
-                  [&am_of_tasks_on_proc](const auto &elem) {
-                      am_of_tasks_on_proc[elem] += 1;
-                  });
-    auto max_load = *std::max_element(am_of_tasks_on_proc.begin(),
-                                      am_of_tasks_on_proc.end());
-    double BF = 100 * ((max_load * s.proc_num / (double)s.task_num) - 1);
-    return std::ceil(BF);
-}
 
 /**
  * @brief Calculate `CR` values on a partitioning
@@ -232,12 +218,9 @@ local_partition_optimization(const std::vector<std::size_t> &partition,
                     data.get_task_time(dist, task_in_question);
                 transfer_proc.value()->parted_tasks.push_back(task_in_question);
                 auto prelim_part = flatten_partition(proc_loads, data.task_num);
-                if (((conf.criteria == extra_criteria::CR) &&
+                if ((conf.criteria == extra_criteria::CR) &&
                      (calculate_partitioned_CR(prelim_part, data) >=
-                      conf.CR_bound)) ||
-                    ((conf.criteria == extra_criteria::BF) &&
-                     (calculate_partitioned_BF(prelim_part, data) >=
-                      conf.BF_bound))) {
+                      conf.CR_bound)) {
                     // LOG_INFO << "mistake! transfering back!";
                     // LOG_INFO << max_load_proc << " " << dist;
                     // LOG_INFO << "moving " << task_in_question;
