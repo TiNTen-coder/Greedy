@@ -11,7 +11,7 @@ namespace opts {
 /**
  * @brief Class for representing constructed schedule.
  *
- * Contains start times of tasks, CR, CR2 and BF for schedule, number of nodes
+ * Contains start times of tasks, CR, CR2 for schedule, number of nodes
  * etc.
  *
  */
@@ -28,12 +28,6 @@ class Output_data {
      *
      */
     double CR2;
-
-    /**
-     * @brief The value of BF criterion.
-     *
-     */
-    double BF;
 
     /**
      * @brief Criterion that was used to construct the schedule.

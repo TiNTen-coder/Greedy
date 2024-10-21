@@ -53,8 +53,6 @@ class TimeDiagram {
         double resulting_CR;
         /** Resulting CR2 that the schedule may have if the task was placed */
         double resulting_CR2;
-        /** Resulting BF that the schedule may have if the task was placed */
-        double resulting_BF;
         /** Time that the task is expected to finish on the processor */
         std::size_t expected_finish;
     };
@@ -144,79 +142,6 @@ class TimeDiagram {
      * @param proc Processor to add task on
      */
     void add_task(ScheduleData::Task task, ScheduleData::Proc proc);
-
-    /**
-     * @brief Choose processor for a task based only on execution time.
-     *
-     * This routine only takes into account task completion time.
-     *
-     * @param task Task to determine optimal processor for
-     * @retval ScheduleData::Proc Processor to assign task to.
-     */
-    ScheduleData::Proc GC2(ScheduleData::Task task);
-
-    /**
-     * @brief Choose processor for a task based on weighted sum for BF.
-     *
-     * This routine calculates the value of \f$crit_{BF} = C_1 \cdot GC_2 + C_2
-     * \cdot BF \f$ and chooses processor with the minimum value.
-     *
-     * @param task Task to determine optimal processor for
-     * @param C1,C2 Coefficients of the weighted sum
-     * @retval ScheduleData::Proc Processor to assign task to.
-     */
-    ScheduleData::Proc GC2_BF_simple(ScheduleData::Task task, double C1, double C2);
-
-    /**
-     * @brief Choose processor for a task based on weighted sum for CR.
-     *
-     * This routine calculates the value of \f$crit_{CR} = C_1 \cdot GC_2 + C_2
-     * \cdot CR + C_3 \cdot CR_2\f$ and chooses processor with the minimum
-     * value.
-     *
-     * @param task Task to determine optimal processor for
-     * @param C1, C2, C3 Coefficients of the weighted sum
-     * @retval ScheduleData::Proc Processor to assign task to.
-     */
-    ScheduleData::Proc GC2_CR_simple(ScheduleData::Task task, double C1, double C2,
-                                   double C3);
-
-    /**
-     * @brief Choose processor based on a variable tolerance scheme with BF
-     * control.
-     *
-     * First, all processors are ranked based on schedule execution time with
-     * the added task, then the list is truncated according to threshold value.
-     * Then the routine chooses the processor best by BF.
-     *
-     * @param task Task to determine optimal processor for
-     * @param n Threshold parameter of the tolerance scheme
-     * @retval ScheduleData::Proc Processor to assign task to.
-     */
-    ScheduleData::Proc GC2_BF_access(ScheduleData::Task task, double n);
-
-    /**
-     * @brief Choose processor based on a variable tolerance scheme with CR
-     * control.
-     *
-     * First, all processors are ranked based on schedule execution time with
-     * the added task, then the list is truncated according to threshold value.
-     * Then the routine sorts the truncated list by CR, truncates it again,
-     * sorts by CR2, truncates again and only then chooses the processor best by
-     * CR.
-     *
-     * @param task Task to determine optimal processor for
-     * @param n Threshold parameter of the tolerance scheme
-     * @retval ScheduleData::Proc Processor to assign task to.
-     */
-    ScheduleData::Proc GC2_CR_access(ScheduleData::Task task, double n);
-
-    /**
-     * @brief Calculate `BF` of current schedule
-     *
-     * @retval double `BF`
-     */
-    double calculate_BF() const;
 
     /**
      * @brief Calculate `CR` of current schedule

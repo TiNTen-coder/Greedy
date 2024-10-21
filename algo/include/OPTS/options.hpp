@@ -13,12 +13,10 @@ namespace opts {
  *
  */
 enum class extra_criteria {
-    NO, ///< no additional constraints
     CR, ///< constraint on interprocessor communication
-    BF  ///< constraint on load balance between processors
 };
 
-BOOST_DESCRIBE_ENUM(extra_criteria, NO, CR, BF)
+BOOST_DESCRIBE_ENUM(extra_criteria, CR)
 
 /**
  * @brief Type of input data.
@@ -49,14 +47,6 @@ struct base_config {
      *
      */
     extra_criteria criteria;
-
-    /**
-     * @brief Max value for BF criterion.
-     *
-     * Used only if criteria is set to BF. Otherwise, this parameter is ignored.
-     *
-     */
-    double BF_bound;
 
     /**
      * @brief Max value for CR criterion.
