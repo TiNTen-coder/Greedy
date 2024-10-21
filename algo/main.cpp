@@ -85,12 +85,11 @@ int main(int argc, char *argv[]) {
 
     opts::init(vm["log"].as<boost::log::trivial::severity_level>());
     std::string algo = vm["command"].as<std::string>();
-
+    opts::base_config conf =
+        opts::parse_base_config(vm["conf"].as<std::string>());
     if (algo == "greedy") {
         LOG_INFO << "Starting";
         boost::timer::cpu_timer timer;
-        opts::greedy_config conf =
-            opts::parse_greedy_config(vm["conf"].as<std::string>());
         opts::greedy::ScheduleData schedule = opts::input_schedule_regular(
             vm["input"].as<std::string>(), conf._class);
         opts::greedy::TimeDiagram time_schedule =
@@ -107,9 +106,6 @@ int main(int argc, char *argv[]) {
     } else if (algo == "edf") {
         LOG_INFO << "Starting";
         boost::timer::cpu_timer timer;
-
-        opts::greedy_config conf =
-            opts::parse_greedy_config(vm["conf"].as<std::string>());
         opts::greedy::ScheduleData schedule = opts::input_schedule_regular(
             vm["input"].as<std::string>(), conf._class);
         opts::greedy::TimeDiagram time_schedule =

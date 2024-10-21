@@ -118,7 +118,7 @@ struct greedy_config : public base_config {
  * @retval greedy_config Structure that contains parameters needed to run greedy
  * algorithm
  */
-greedy_config parse_greedy_config(std::string filename);
+base_config parse_base_config(std::string filename);
 
 } // namespace opts
 
