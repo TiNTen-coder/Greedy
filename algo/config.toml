@@ -2,7 +2,6 @@
 criteria = "CR"
 CR_bound = 0.4
 CR2_bound = 0.0
-BF_bound = 10.0
 inp_class = "class_1"
 
 [greedy]

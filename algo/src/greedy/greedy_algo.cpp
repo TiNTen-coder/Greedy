@@ -35,7 +35,6 @@ TimeDiagram construct_time_schedule(ScheduleData &schedule,
     if (extra_criteria::CR == conf.criteria) {
         LOG_INFO << "CR criteria";
 
-        // is_direct_transmition? (long_transmition(proc1, proc2) == -1)
         size_t proc1 = 0;
         size_t group_size = 0;
         for (size_t proc2 = 1; proc2 < schedule.proc_num; ++proc2) {
@@ -96,9 +95,6 @@ TimeDiagram construct_time_schedule(ScheduleData &schedule,
                     part_graph(csr2, group_size, 30, // 30 is ufactor
                                curr_task_weights);
             }
-            // partitioning ------> curr_proc = labels[curr_task] * group_size +
-            // labels2[labels[curr_task]][new_nums[curr_task]];   //
-            // proc_to_proc
             partitioning.resize(task_num);
             for (size_t curr_task = 0; curr_task < task_num; ++curr_task) {
                 partitioning[curr_task] =
@@ -154,14 +150,6 @@ TimeDiagram construct_time_schedule(ScheduleData &schedule,
                 last_ratio = ratio;
             }
         }
-
-        // if (conf.dump_steps) {
-        //     std::stringstream ss;
-        //     ss << "results/step_" << std::setfill('0') << std::setw(7)
-        //        << it_counter << ".json";
-        //     dump_step(ss.str(), time_schedule);
-        // }
-
         ++it_counter;
     }
     LOG_INFO << "schedule calculated";
@@ -174,8 +162,6 @@ TimeDiagram greedy_EDF_heuristic(ScheduleData &sched, opts::greedy_config conf) 
     std::unordered_set<ScheduleData::Task> leaf_nodes;
 
     ScheduleData::Graph &gr = sched.get_graph();
-
-    // boost::write_graphviz(std::cout, gr);
 
     std::vector<std::size_t> proc_time_vector;
 
@@ -193,7 +179,6 @@ TimeDiagram greedy_EDF_heuristic(ScheduleData &sched, opts::greedy_config conf) 
     if (conf.criteria == extra_criteria::CR) {
         LOG_INFO << "CR criteria";
 
-        // is_direct_transmition? (long_transmition(proc1, proc2) == -1)
         size_t proc1 = 0;
         size_t group_size = 0;
         for (size_t proc2 = 1; proc2 < sched.proc_num; ++proc2) {
@@ -254,9 +239,6 @@ TimeDiagram greedy_EDF_heuristic(ScheduleData &sched, opts::greedy_config conf) 
                     part_graph(csr2, group_size, 30, // 30 is ufactor
                                curr_task_weights);
             }
-            // partitioning ------> curr_proc = labels[curr_task] * group_size +
-            // labels2[labels[curr_task]][new_nums[curr_task]];   //
-            // proc_to_proc
             partitioning.resize(task_num);
             for (size_t curr_task = 0; curr_task < task_num; ++curr_task) {
                 partitioning[curr_task] =
@@ -302,8 +284,6 @@ TimeDiagram greedy_EDF_heuristic(ScheduleData &sched, opts::greedy_config conf) 
             new_set_of_leaves.erase(leaf);
             for (auto [from_it, to_it] = boost::in_edges(leaf, gr);
                  from_it != to_it; ++from_it) {
-                // LOG_INFO << "goung through leaves of " << leaf
-                //          << "; cur_edge = " << *from_it;
                 ScheduleData::Task task = boost::source(*from_it, gr);
                 bool has_real_children = false;
                 for (auto [frst_chld, lst_chld] = boost::out_edges(task, gr);
@@ -314,9 +294,6 @@ TimeDiagram greedy_EDF_heuristic(ScheduleData &sched, opts::greedy_config conf) 
                         break;
                     }
                 }
-                // LOG_INFO << "task = " << task
-                //          << "; has_real_children = " << has_real_children
-                //          << "; gr[task].deadline = " << gr[task].deadline;
                 if (!has_real_children && gr[task].deadline == 1) {
                     new_set_of_leaves.insert(task);
                 }
@@ -324,7 +301,6 @@ TimeDiagram greedy_EDF_heuristic(ScheduleData &sched, opts::greedy_config conf) 
         }
 
         leaf_nodes = std::move(new_set_of_leaves);
-        // LOG_INFO << "leaf_nodes.size() = " << leaf_nodes.size();
 
         for (const ScheduleData::Task leaf : leaf_nodes) {
             std::vector<ScheduleData::Task> targets;
@@ -380,7 +356,6 @@ TimeDiagram greedy_EDF_heuristic(ScheduleData &sched, opts::greedy_config conf) 
     for (const ScheduleData::Task &cur : order) {
         ScheduleData::Proc chosen_proc = partitioning[cur];
 
-        // LOG_INFO << "adding task " << cur << " to proc " << chosen_proc;
         res.add_task(cur, chosen_proc);
 
         if (it_counter % 100 == 0) {
