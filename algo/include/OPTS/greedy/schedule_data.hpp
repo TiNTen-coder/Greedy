@@ -228,18 +228,6 @@ class ScheduleData {
     Task GC1(std::set<Task> &D);
 
     /**
-     * @deprecated
-     * @brief Calculate modified GC1 for CR control
-     *
-     * Greedy criteria 1 chooses the task from \f$ D \f$ that has the lowest
-     * `out_degree`
-     *
-     * @param D Set of tasks that are ready to be added to the schedule
-     * @retval ScheduleData::Task Chosen next task.
-     */
-    Task GC1_for_CR_con(std::set<Task> &D);
-
-    /**
      * @brief This method progresses the top nodes set if a task is added.
      *
      * This method:

@@ -127,12 +127,8 @@ TimeDiagram construct_time_schedule(ScheduleData &schedule,
     BOOST_LOG_NAMED_SCOPE("algo");
     while (!D.empty()) {
         ScheduleData::Task chosen_task;
-        if (conf.cr_con &&
-            (time_schedule.calculate_CR() >= 0.75 * conf.CR_bound)) {
-            chosen_task = schedule.GC1_for_CR_con(D);
-        } else {
-            chosen_task = schedule.GC1(D);
-        }
+        chosen_task = schedule.GC1(D);
+
         LOG_TRACE << "GC1 chosen " << chosen_task;
         ScheduleData::Proc chosen_proc = partitioning[chosen_task];
 

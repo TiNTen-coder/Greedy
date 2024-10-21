@@ -126,15 +126,6 @@ ScheduleData::Task ScheduleData::GC1(std::set<ScheduleData::Task> &D) {
                              });
 }
 
-ScheduleData::Task ScheduleData::GC1_for_CR_con(std::set<ScheduleData::Task> &D) {
-    BOOST_LOG_NAMED_SCOPE("GC1_for_CR_con");
-    return *std::max_element(D.begin(), D.end(),
-                             [&](ScheduleData::Task task1, ScheduleData::Task task2) {
-                                 return boost::in_degree(task1, graph) <
-                                        boost::in_degree(task2, graph);
-                             });
-}
-
 ScheduleData::Graph &ScheduleData::get_graph() {
     BOOST_LOG_NAMED_SCOPE("get_graph");
     return graph;
