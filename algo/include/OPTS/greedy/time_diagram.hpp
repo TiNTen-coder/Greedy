@@ -181,7 +181,7 @@ class TimeDiagram {
      * @param conf Greedy algorithm configuration.
      * @return Output_data Generalised output data.
      */
-    Output_data extract_data(const opts::greedy_config &conf) const;
+    Output_data extract_data(const opts::base_config &conf) const;
 };
 
 } // namespace greedy

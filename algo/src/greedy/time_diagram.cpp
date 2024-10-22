@@ -209,7 +209,7 @@ std::vector<TimeDiagram::proc_info> &TimeDiagram::get_schedule() {
     return proc_array;
 }
 
-Output_data TimeDiagram::extract_data(const opts::greedy_config &conf) const {
+Output_data TimeDiagram::extract_data(const opts::base_config &conf) const {
     Output_data res;
     res.CR = calculate_CR();
     res.CR2 = calculate_CR2();

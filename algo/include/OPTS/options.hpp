@@ -72,40 +72,11 @@ struct base_config {
 };
 
 /**
- * @brief GC2 scheme of choosing processor for a task
- *
- */
-enum class GC2_scheme {
-    access, ///< tolrance scheme of sort -> cut -> sort -> take best
-    simple  ///< choose processor according to weighted sum
-};
-
-BOOST_DESCRIBE_ENUM(GC2_scheme, access, simple)
-
-/**
- * @brief Structure that contains configuration parameters common for all
- * algorithms and specific for greedy algorithm.
- *
- */
-struct greedy_config : public base_config {
-    greedy_config(const base_config &base) : base_config(base) {}
-
-    GC2_scheme scheme; ///< GC2 scheme chosen
-    double threshold;  ///< Threshold for tolerance scheme
-    /**
-     * @deprecated
-     * @brief CR control toggle
-     *
-     */
-    bool cr_con;
-};
-
-/**
  * @brief Parse parameters needed to run greedy algorithm from configuration
  * file.
  *
  * @param filename Name of the configuration file
- * @retval greedy_config Structure that contains parameters needed to run greedy
+ * @retval base_config Structure that contains parameters needed to run greedy
  * algorithm
  */
 base_config parse_base_config(std::string filename);

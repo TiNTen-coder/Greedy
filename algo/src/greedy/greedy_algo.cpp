@@ -12,7 +12,7 @@ namespace opts {
 namespace greedy {
 
 TimeDiagram construct_time_schedule(ScheduleData &schedule,
-                                     opts::greedy_config conf) {
+                                     opts::base_config conf) {
     TimeDiagram time_schedule(schedule, schedule.proc_num);
 
     auto D = schedule.get_top_vertices();
@@ -92,7 +92,7 @@ TimeDiagram construct_time_schedule(ScheduleData &schedule,
                 }
                 auto csr2 = adjcy2CSR(proc_graph);
                 std::tie(labels2[proc_group], edgecut) =
-                    part_graph(csr2, group_size, 30, // 30 is ufactor
+                    part_graph(csr2, group_size, 30,
                                curr_task_weights);
             }
             partitioning.resize(task_num);
@@ -152,7 +152,7 @@ TimeDiagram construct_time_schedule(ScheduleData &schedule,
     return time_schedule;
 }
 
-TimeDiagram greedy_EDF_heuristic(ScheduleData &sched, opts::greedy_config conf) {
+TimeDiagram greedy_EDF_heuristic(ScheduleData &sched, opts::base_config conf) {
     BOOST_LOG_NAMED_SCOPE("greedy_EDF_heuristic");
     std::size_t right_border = 0;
     std::unordered_set<ScheduleData::Task> leaf_nodes;

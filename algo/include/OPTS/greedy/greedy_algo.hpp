@@ -15,7 +15,7 @@ namespace greedy {
  * @retval TimeDiagram Constructed schedule.
  */
 TimeDiagram construct_time_schedule(ScheduleData &schedule,
-                                     opts::greedy_config conf);
+                                     opts::base_config conf);
 
 /**
  * @brief This is the Greedy_EDF algorithm.
@@ -25,7 +25,7 @@ TimeDiagram construct_time_schedule(ScheduleData &schedule,
  * @throws std::runtime_error If ann error occured during inserting a task. 
  * @retval TimeDiagram Constructed schedule.
  */
-TimeDiagram greedy_EDF_heuristic(ScheduleData &sched, opts::greedy_config conf);
+TimeDiagram greedy_EDF_heuristic(ScheduleData &sched, opts::base_config conf);
 
 } // namespace greedy
 } // namespace opts
