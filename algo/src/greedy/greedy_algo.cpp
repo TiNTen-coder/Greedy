@@ -131,8 +131,6 @@ TimeDiagram construct_time_schedule(ScheduleData &schedule,
 
         LOG_TRACE << "GC1 chosen " << chosen_task;
         ScheduleData::Proc chosen_proc = partitioning[chosen_task];
-
-        LOG_TRACE << "GC2 chosen " << chosen_proc;
         time_schedule.add_task(chosen_task, chosen_proc);
 
         schedule.remove_vertex(chosen_task);
@@ -152,8 +150,8 @@ TimeDiagram construct_time_schedule(ScheduleData &schedule,
     return time_schedule;
 }
 
-TimeDiagram greedy_EDF_heuristic(ScheduleData &sched, opts::base_config conf) {
-    BOOST_LOG_NAMED_SCOPE("greedy_EDF_heuristic");
+TimeDiagram greedy_EDFBase_heuristic(ScheduleData &sched, opts::base_config conf) {
+    BOOST_LOG_NAMED_SCOPE("greedy_EDFBase_heuristic");
     std::size_t right_border = 0;
     std::unordered_set<ScheduleData::Task> leaf_nodes;
 
@@ -313,21 +311,11 @@ TimeDiagram greedy_EDF_heuristic(ScheduleData &sched, opts::base_config conf) {
                     return gr[a].deadline < gr[b].deadline;
                 });
 
-            if (conf.criteria != extra_criteria::CR) {
-                boost::numeric::ublas::matrix_column<decltype(sched.task_times)>
-                    task_col(sched.task_times, leaf);
-                auto median_completion =
-                    std::accumulate(task_col.begin(), task_col.end(), 0) /
-                    (int)sched.proc_num;
-                gr[leaf].deadline =
-                    gr[earliest_deadline].deadline - median_completion;
-            } else {
-                gr[leaf].deadline =
-                    gr[earliest_deadline].deadline -
-                    sched.get_task_time(partitioning[leaf], leaf) -
-                    sched.tran_times(partitioning[leaf],
-                                     partitioning[earliest_deadline]);
-            }
+            gr[leaf].deadline =
+                gr[earliest_deadline].deadline -
+                sched.get_task_time(partitioning[leaf], leaf) -
+                sched.tran_times(partitioning[leaf],
+                                    partitioning[earliest_deadline]);
         }
     }
 
@@ -368,6 +356,11 @@ TimeDiagram greedy_EDF_heuristic(ScheduleData &sched, opts::base_config conf) {
     LOG_INFO << "Time schedule constructed; time = " << res.get_time();
 
     return res;
+}
+
+TimeDiagram greedy_EDFFollow_heuristic(ScheduleData &sched, opts::base_config conf) {
+    BOOST_LOG_NAMED_SCOPE("greedy_EDFFollow_heuristic");
+
 }
 
 } // namespace greedy

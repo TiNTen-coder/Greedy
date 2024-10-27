@@ -103,13 +103,29 @@ int main(int argc, char *argv[]) {
         opts::dump_to_json(vm["output"].as<std::string>(), out_data,
                            (algo_time.system + algo_time.user) / (uint64_t)1e6);
         return 0;
-    } else if (algo == "edf") {
+    } else if (algo == "edfbase") {
         LOG_INFO << "Starting";
         boost::timer::cpu_timer timer;
         opts::greedy::ScheduleData schedule = opts::input_schedule_regular(
             vm["input"].as<std::string>(), conf._class);
         opts::greedy::TimeDiagram time_schedule =
-            opts::greedy::greedy_EDF_heuristic(schedule, conf);
+            opts::greedy::greedy_EDFBase_heuristic(schedule, conf);
+
+        auto algo_time = timer.elapsed();
+
+        LOG_INFO << "dumping to " << vm["output"].as<std::string>();
+
+        opts::Output_data out_data = time_schedule.extract_data(conf);
+        opts::dump_to_json(vm["output"].as<std::string>(), out_data,
+                           (algo_time.system + algo_time.user) / (uint64_t)1e6);
+        return 0;
+    } else if (algo == "edffollow") {
+        LOG_INFO << "Starting";
+        boost::timer::cpu_timer timer;
+        opts::greedy::ScheduleData schedule = opts::input_schedule_regular(
+            vm["input"].as<std::string>(), conf._class);
+        opts::greedy::TimeDiagram time_schedule =
+            opts::greedy::greedy_EDFFollow_heuristic(schedule, conf);
 
         auto algo_time = timer.elapsed();
 
