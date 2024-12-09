@@ -97,8 +97,10 @@ part_graph(CSR &csr, std::size_t num_parts, std::uint64_t ufactor,
                             vweights.data(), NULL, NULL, &nparts, NULL, NULL,
                             m_options, &edgecut, part.get());
     }
-
+    // ЗДЕСЬ ЗАДАЧИ РАСКИДЫВАЮТСЯ ПО ПРОЦЕССОРАМ
     std::vector<std::size_t> result(part.get(), part.get() + nvexes);
+    // std::vector<std::size_t> result = {0, 1, 2, 3}; // tests1, tests2, tests3
+    // std::vector<std::size_t> result = {0, 1, 2, 3, 2, 0, 3}; // tests4
     seed++;
     srand(seed);
     return std::make_tuple(result, edgecut);

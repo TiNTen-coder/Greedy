@@ -61,7 +61,7 @@ std::set<ScheduleData::Task> ScheduleData::get_top_vertices() {
     }
     return top_vertices;
 }
-
+/*
 void ScheduleData::create_fictive_node(std::set<ScheduleData::Task> &D) {
     BOOST_LOG_NAMED_SCOPE("create_fictive_node");
     auto new_vert = add_vertex({0, 0, true, true}, graph);
@@ -111,6 +111,7 @@ void ScheduleData::hard_remove_fictive_vertices() {
         }
     }
 }
+*/
 
 void ScheduleData::remove_vertex(const ScheduleData::Task &task) {
     BOOST_LOG_NAMED_SCOPE("remove_vertex");

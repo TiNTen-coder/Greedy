@@ -46,7 +46,13 @@ std::size_t TimeDiagram::find_place(greedy::ScheduleData::Task task,
                 ->finish;
         times.push_back(trans_time + stop_time);
     }
-
+    /*
+    std::cout << std::endl << std::endl << "какие-то времена в time_diagram" << std::endl;
+    for (auto i : times) {
+        std::cout << i << " " << sched.get_task_time(fast_mapping[task], task) << std::endl;
+    }
+    std::cout << std::endl << std::endl;
+    */
     std::size_t first_available_dependencies = 0;
 
     if (!times.empty()) {

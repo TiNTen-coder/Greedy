@@ -6,6 +6,7 @@
 
 #include <set>
 #include <vector>
+#include <map>
 
 namespace opts {
 namespace greedy {
@@ -35,6 +36,24 @@ class ScheduleData {
          *
          */
         int deadline = 1;
+
+        /**
+         * @brief Перечень потомков, находящихся на том же процессоре.
+         *
+         */
+        std::unordered_map<size_t, std::set<size_t>> children_on_diff_processes = {};
+
+        /**
+         * @brief Минимальный директивный срок.
+         *
+         */
+        int ds_abs_min = 1000000000;
+
+        /**
+         * @brief Минимальный директивный срок.
+         *
+         */
+        long long summary_task_duration = 0;
 
         /**
          * @deprecated
