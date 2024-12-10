@@ -26,7 +26,7 @@ TimeDiagram construct_time_schedule(ScheduleData &schedule,
  * @retval TimeDiagram Constructed schedule.
  */
 
-TimeDiagram greedy_EDFBase_heuristic(ScheduleData &sched, opts::base_config conf);
+TimeDiagram greedy_EDF_heuristic(ScheduleData &sched, opts::base_config conf, std::string flag);
 /**
  * @brief This is the Greedy_EDFFollow algorithm.
  * 
@@ -35,7 +35,6 @@ TimeDiagram greedy_EDFBase_heuristic(ScheduleData &sched, opts::base_config conf
  * @throws std::runtime_error If ann error occured during inserting a task. 
  * @retval TimeDiagram Constructed schedule.
  */
-TimeDiagram greedy_EDFFollow_heuristic(ScheduleData &sched, opts::base_config conf);
 
 } // namespace greedy
 } // namespace opts

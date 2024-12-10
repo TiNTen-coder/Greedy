@@ -150,8 +150,8 @@ TimeDiagram construct_time_schedule(ScheduleData &schedule,
     return time_schedule;
 }
 
-TimeDiagram greedy_EDFBase_heuristic(ScheduleData &sched, opts::base_config conf) {
-    BOOST_LOG_NAMED_SCOPE("greedy_EDFBase_heuristic");
+TimeDiagram greedy_EDF_heuristic(ScheduleData &sched, opts::base_config conf, std::string flag) {
+    BOOST_LOG_NAMED_SCOPE("greedy_EDF_heuristic");
     std::size_t right_border = 0;
     std::unordered_set<ScheduleData::Task> leaf_nodes;
 
@@ -268,6 +268,9 @@ TimeDiagram greedy_EDFBase_heuristic(ScheduleData &sched, opts::base_config conf
                 throw std::runtime_error("Cannot add vertex!");
             }
             gr[cur].deadline = right_border;
+            if (flag == "edffollow") {
+                gr[cur].children_on_diff_processes = {};
+            }
         }
     }
 
@@ -281,16 +284,26 @@ TimeDiagram greedy_EDFBase_heuristic(ScheduleData &sched, opts::base_config conf
                  from_it != to_it; ++from_it) {
                 ScheduleData::Task task = boost::source(*from_it, gr);
                 bool has_real_children = false;
+                std::unordered_map<size_t, std::set<size_t>> children_on_proc = {};
                 for (auto [frst_chld, lst_chld] = boost::out_edges(task, gr);
                      frst_chld != lst_chld; ++frst_chld) {
-                    auto chld = boost::target(*frst_chld, gr);
-                    if (gr[chld].deadline == 1) {
-                        has_real_children = true;
-                        break;
-                    }
+                        auto chld = boost::target(*frst_chld, gr);
+                        if (flag == "edffollow") {
+                            children_on_proc[partitioning[chld]].insert(
+                                gr[chld].children_on_diff_processes[partitioning[chld]].begin(),
+                                gr[chld].children_on_diff_processes[partitioning[chld]].end());
+                            children_on_proc[partitioning[chld]].insert(chld);
+                        }
+                        if (gr[chld].deadline == 1) {
+                            has_real_children = true;
+                            break;
+                        }
                 }
                 if (!has_real_children && gr[task].deadline == 1) {
                     new_set_of_leaves.insert(task);
+                    if (flag == "edffollow") {
+                        gr[task].children_on_diff_processes = std::move(children_on_proc);
+                    }
                 }
             }
         }
@@ -299,6 +312,20 @@ TimeDiagram greedy_EDFBase_heuristic(ScheduleData &sched, opts::base_config conf
 
         for (const ScheduleData::Task leaf : leaf_nodes) {
             std::vector<ScheduleData::Task> targets;
+            int min_duration_sum = INT_MAX;
+            if (flag == "edffollow") {
+                for (auto i : gr[leaf].children_on_diff_processes) {
+                    int cur_duration_sum = 0;
+                    for (auto j : i.second) {
+                        cur_duration_sum += sched.get_task_time(i.first, j);
+                    }
+                    int sum_and_trans_time = -cur_duration_sum - sched.tran_times(partitioning[leaf], i.first);
+                    //std::cout << min_duration_sum << " " << sum_and_trans_time << std::endl;
+                    //if (min_duration_sum > sum_and_trans_time) {
+                    min_duration_sum = fmin(min_duration_sum, sum_and_trans_time);
+                    //}
+                }
+            }
 
             for (auto [frst_deadline, last_deadline] =
                      boost::out_edges(leaf, gr);
@@ -329,11 +356,17 @@ TimeDiagram greedy_EDFBase_heuristic(ScheduleData &sched, opts::base_config conf
             std::cout << partitioning[leaf] << " " << sched.get_task_time(partitioning[leaf], leaf) << " " << sched.tran_times(partitioning[leaf],
                                     partitioning[earliest_deadline]) << std::endl;
             */
-            gr[leaf].deadline =
+            /*std::cout << gr[earliest_deadline].deadline -
+                sched.get_task_time(partitioning[earliest_deadline], earliest_deadline) -
+                sched.tran_times(partitioning[leaf],
+                                    partitioning[earliest_deadline]) << " " << min_duration_sum << std::endl;*/
+            gr[leaf].deadline = fmin(
                 gr[earliest_deadline].deadline -
                 sched.get_task_time(partitioning[earliest_deadline], earliest_deadline) -
                 sched.tran_times(partitioning[leaf],
-                                    partitioning[earliest_deadline]); // Учитывается время межпроцессорной передачи данных
+                                    partitioning[earliest_deadline]), // Учитывается время межпроцессорной передачи данных
+                min_duration_sum
+            );
             
             //std::cout << "Назначенный директивный срок" << std::endl;
             //std::cout << gr[leaf].deadline << std::endl;
