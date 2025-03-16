@@ -71,7 +71,9 @@ int main(int argc, char *argv[]) {
         ("conf", boost::program_options::value<std::string>()->required(),
          "Config file path") //
         ("command", boost::program_options::value<std::string>()->required(),
-         "algo to execute");
+         "algo to execute") //
+        ("random", boost::program_options::value<int>()->required(),
+         "Fix METIS random flag");
     boost::program_options::positional_options_description pos;
     pos.add("command", 1);
     boost::program_options::variables_map vm;
@@ -103,13 +105,13 @@ int main(int argc, char *argv[]) {
         opts::dump_to_json(vm["output"].as<std::string>(), out_data,
                            (algo_time.system + algo_time.user) / (uint64_t)1e6);
         return 0;
-    } else if (algo == "edfbase" || algo == "edffollow") {
+    } else if (algo == "edfbase" || algo == "edffollow" || algo == "edf_gc1") {
         LOG_INFO << "Starting";
         boost::timer::cpu_timer timer;
         opts::greedy::ScheduleData schedule = opts::input_schedule_regular(
             vm["input"].as<std::string>(), conf._class);
         opts::greedy::TimeDiagram time_schedule =
-            opts::greedy::greedy_EDF_heuristic(schedule, conf, algo);
+            opts::greedy::greedy_EDF_heuristic(schedule, conf, algo, vm["random"].as<int>());
 
         auto algo_time = timer.elapsed();
 

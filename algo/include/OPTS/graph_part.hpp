@@ -54,7 +54,7 @@ CSR adjcy2CSR(const greedy::ScheduleData::Graph &graph);
  */
 std::tuple<std::vector<std::size_t>, uint64_t>
 part_graph(CSR &csr, std::size_t num_parts, std::uint64_t ufactor,
-           std::vector<std::size_t> first_row);
+           std::vector<std::size_t> first_row, int random_flag);
 
 /**
  * @brief Local partition optimization algorithm

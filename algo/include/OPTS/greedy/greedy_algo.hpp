@@ -26,7 +26,7 @@ TimeDiagram construct_time_schedule(ScheduleData &schedule,
  * @retval TimeDiagram Constructed schedule.
  */
 
-TimeDiagram greedy_EDF_heuristic(ScheduleData &sched, opts::base_config conf, std::string flag);
+TimeDiagram greedy_EDF_heuristic(ScheduleData &sched, opts::base_config conf, std::string flag, int random_flag);
 /**
  * @brief This is the Greedy_EDFFollow algorithm.
  * 
