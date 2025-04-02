@@ -268,7 +268,7 @@ TimeDiagram greedy_EDF_heuristic(ScheduleData &sched, opts::base_config conf, st
                 throw std::runtime_error("Cannot add vertex!");
             }
             gr[cur].deadline = right_border;
-            if (flag == "edffollow") {
+            if (flag == "edffollow" || flag == "edff_misf") {
                 gr[cur].children_on_diff_processes = {};
             }
         }
@@ -288,7 +288,7 @@ TimeDiagram greedy_EDF_heuristic(ScheduleData &sched, opts::base_config conf, st
                 for (auto [frst_chld, lst_chld] = boost::out_edges(task, gr);
                      frst_chld != lst_chld; ++frst_chld) {
                         auto chld = boost::target(*frst_chld, gr);
-                        if (flag == "edffollow") {
+                        if (flag == "edffollow" || flag == "edff_misf") {
                             children_on_proc[partitioning[chld]].insert(
                                 gr[chld].children_on_diff_processes[partitioning[chld]].begin(),
                                 gr[chld].children_on_diff_processes[partitioning[chld]].end());
@@ -301,7 +301,7 @@ TimeDiagram greedy_EDF_heuristic(ScheduleData &sched, opts::base_config conf, st
                 }
                 if (!has_real_children && gr[task].deadline == 1) {
                     new_set_of_leaves.insert(task);
-                    if (flag == "edffollow") {
+                    if (flag == "edffollow" || flag == "edff_misf") {
                         gr[task].children_on_diff_processes = std::move(children_on_proc);
                     }
                 }
@@ -313,7 +313,7 @@ TimeDiagram greedy_EDF_heuristic(ScheduleData &sched, opts::base_config conf, st
         for (const ScheduleData::Task leaf : leaf_nodes) {
             std::vector<ScheduleData::Task> targets;
             int min_duration_sum = INT_MAX;
-            if (flag == "edffollow") {
+            if (flag == "edffollow" || flag == "edff_misf") {
                 for (auto i : gr[leaf].children_on_diff_processes) {
                     int cur_duration_sum = 0;
                     for (auto j : i.second) {
@@ -391,26 +391,18 @@ TimeDiagram greedy_EDF_heuristic(ScheduleData &sched, opts::base_config conf, st
     std::size_t it_counter_max = sched.task_num;
     double last_ratio = it_counter / (double)it_counter_max;
 
-    if (flag == "edf_gc1") {
-        std::vector<ScheduleData::Task> QQQ;
-        int i = 1;
-        int current_length = 1;
-        QQQ.push_back(order[0]);
+    if (flag == "edfb_misf" || flag == "edff_misf") {
+        std::set<ScheduleData::Task> QQQ;
         int length = sched.task_num;
-        for (int i = 1; i < length; i++) {
+        int previous_deadline = gr[order[0]].deadline - 1;
+        for (int i = 0; i < length; i++) {
             ScheduleData::Task cur = order[i];
-            if (gr[cur].deadline != gr[QQQ[current_length - 1]].deadline) {
-                std::set<ScheduleData::Task> QQQ_set;
-                for (auto j : QQQ) {
-                    QQQ_set.insert(j);
-                }
-                while (!QQQ_set.empty()) {
-                    ScheduleData::Task chosen_task = sched.GC1(QQQ_set);
+            if (gr[cur].deadline != previous_deadline) {
+                while (!QQQ.empty()) {
+                    ScheduleData::Task chosen_task = sched.GC1(QQQ);
                     ScheduleData::Proc chosen_proc = partitioning[chosen_task];
                     res.add_task(chosen_task, chosen_proc);
-
-                    sched.remove_vertex(chosen_task);
-                    QQQ_set = sched.progress_top_vertices(QQQ_set, chosen_task);
+                    QQQ.erase(chosen_task);
 
                     if (it_counter % 100 == 0) {
                         auto ratio = it_counter / (double)it_counter_max;
@@ -422,11 +414,25 @@ TimeDiagram greedy_EDF_heuristic(ScheduleData &sched, opts::base_config conf, st
                     }
                     ++it_counter;
                 }
-                QQQ.clear();
-                current_length = 0;
             }
-            QQQ.push_back(cur);
-            current_length++;
+            previous_deadline = gr[cur].deadline;
+            QQQ.insert(cur);
+        }
+        while (!QQQ.empty()) {
+            ScheduleData::Task chosen_task = sched.GC1(QQQ);
+            ScheduleData::Proc chosen_proc = partitioning[chosen_task];
+            res.add_task(chosen_task, chosen_proc);
+            QQQ.erase(chosen_task);
+
+            if (it_counter % 100 == 0) {
+                auto ratio = it_counter / (double)it_counter_max;
+                if (ratio - last_ratio > 0.01) {
+                    LOG_DEBUG << "Progress: " << ratio * 100 << "%"
+                            << "; time = " << res.get_time();
+                    last_ratio = ratio;
+                }
+            }
+            ++it_counter;
         }
     } else {
         for (const ScheduleData::Task &cur : order) {

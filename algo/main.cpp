@@ -105,7 +105,7 @@ int main(int argc, char *argv[]) {
         opts::dump_to_json(vm["output"].as<std::string>(), out_data,
                            (algo_time.system + algo_time.user) / (uint64_t)1e6);
         return 0;
-    } else if (algo == "edfbase" || algo == "edffollow" || algo == "edf_gc1") {
+    } else if (algo == "edfbase" || algo == "edffollow" || algo == "edfb_misf" || algo == "edff_misf") {
         LOG_INFO << "Starting";
         boost::timer::cpu_timer timer;
         opts::greedy::ScheduleData schedule = opts::input_schedule_regular(
