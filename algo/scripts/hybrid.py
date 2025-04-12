@@ -3,29 +3,29 @@ import json
 from time import sleep
 
 
+#folder = "all_heuristic_equal_graphs"
+#dataset = "layer_class_1_equal_graphs"
 #os.system(f"rm -rf scripts/edf_misf_layer_research")
-os.system(f"mkdir scripts/edf_misf_ideal_research")
+#os.system(f"mkdir scripts/{folder}")
 
-for flag in ["edfb_misf", "edff_misf"]:
-#for flag in ["greedy", "edfbase", "edffollow", "edfb_misf", "edff_misf"]:
-    """for i in [5, 10, 20, 30, 40, 50]:
-        #os.system(f"rm -rf scripts/edf_misf_layer_research/{i}")
-        os.system(f"mkdir scripts/edf_misf_layer_research/{i}")
-        for j in [500, 1000, 2000, 5000, 10000]:
-            #os.system(f"rm -rf scripts/edf_misf_layer_research/{i}/{j}")
-            os.system(f"mkdir scripts/edf_misf_layer_research/{i}/{j}")
-            times = []
-            for round_ in range(1, 21):
-                os.system(f"build/opts --input ../layer_class_1-input/{i}_{j}.in --output scripts/edf_misf_layer_research/{i}/{j}/{flag}_{round_}.json --conf config.toml --command {flag} --random {i * 10 + j * 100 + round_}")
-                with open(f'scripts/edf_misf_layer_research/{i}/{j}/{flag}_{round_}.json') as f:  
-                    data = json.loads(f.read())
-                    times.append(data["time"])
-            with open(f"scripts/edf_misf_layer_research/{i}/{j}/result_{flag}.txt", "w") as f:
-                for q in range(len(times)):
-                    f.write(str(times[q]))
-                    if q < len(times) - 1:
-                        f.write(" ")"""
-    for i in [5, 10, 25, 50, 75, 100, 125, 150]:
+for based_on in [5, 10]:
+    dataset = f"layer_class_1_based_on_{based_on}"
+    folder = f"based_on_{based_on}_*"
+    for flag in ["greedy", "edfbase", "edffollow", "edfb_misf", "edff_misf", "est", "eft"]:
+        for i in [5, 10, 20, 30, 40, 50]:
+            os.system(f"mkdir scripts/{folder}")
+            #os.system(f"rm -rf scripts/edf_misf_layer_research/{i}")
+            os.system(f"mkdir scripts/{folder}/{i}")
+            for j in [500, 1000, 2000, 5000, 10000]:
+                #os.system(f"rm -rf scripts/edf_misf_layer_research/{i}/{j}")
+                os.system(f"mkdir scripts/{folder}/{i}/{j}")
+                os.system(f"build/opts --input ../{dataset}/{i}_{j}.in --output scripts/{folder}/{i}/{j}/{flag}.json --conf config.toml --command {flag} --random {i * 10 + j * 100}")
+                with open(f'scripts/{folder}/{i}/{j}/{flag}.json') as f:  
+                    data = json.loads(f.read())["time"]
+                with open(f"scripts/{folder}/{i}/{j}/result_{flag}.txt", "w") as f:
+                    f.write(str(data))
+                os.system(f"rm -rf scripts/{folder}/{i}/{j}/{flag}.json")
+    """for i in [5, 10, 25, 50, 75, 100, 125, 150]:
     #for i in [25, 50, 75, 100, 125, 150]:
         #os.system(f"rm -rf scripts/edf_misf_layer_research/{i}")
         os.system(f"mkdir scripts/edf_misf_ideal_research/{i}")
@@ -45,7 +45,7 @@ for flag in ["edfb_misf", "edff_misf"]:
                     if q < len(times) - 1:
                         f.write(" ")
             for round_ in range(1, 21):
-                os.system(f"rm -rf scripts/edf_misf_ideal_research/{i}/{j}/{flag}_{round_}.json")
+                os.system(f"rm -rf scripts/edf_misf_ideal_research/{i}/{j}/{flag}_{round_}.json")"""
 """ 
 flag = "edf_gc1"
 for i in [5, 10, 20, 30, 40, 50]:

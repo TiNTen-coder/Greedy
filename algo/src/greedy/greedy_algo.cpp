@@ -128,7 +128,6 @@ TimeDiagram construct_time_schedule(ScheduleData &schedule,
     while (!D.empty()) {
         ScheduleData::Task chosen_task;
         chosen_task = schedule.GC1(D);
-        std::cout << chosen_task << std::endl;
         LOG_TRACE << "GC1 chosen " << chosen_task;
         ScheduleData::Proc chosen_proc = partitioning[chosen_task];
         time_schedule.add_task(chosen_task, chosen_proc);
@@ -384,14 +383,56 @@ TimeDiagram greedy_EDF_heuristic(ScheduleData &sched, opts::base_config conf, st
               [&gr](const ScheduleData::Task &fr, const ScheduleData::Task &scnd) {
                   return gr[fr].deadline < gr[scnd].deadline;
               });
-
+    
     LOG_INFO << "Got order";
 
     std::size_t it_counter = 0;
     std::size_t it_counter_max = sched.task_num;
     double last_ratio = it_counter / (double)it_counter_max;
 
-    if (flag == "edfb_misf" || flag == "edff_misf") {
+    if (flag == "greedy" || flag == "est" || flag == "eft") {
+        auto D = sched.get_top_vertices();
+        LOG_INFO << "D updated";
+        BOOST_LOG_NAMED_SCOPE("algo");
+        while (!D.empty()) {
+            ScheduleData::Task chosen_task;
+            if (flag == "greedy") {
+                chosen_task = sched.GC1(D);
+                LOG_TRACE << "GC1 chosen " << chosen_task;
+            } else if (flag == "est") {
+                chosen_task = *std::max_element(D.begin(), D.end(),
+                        [&](ScheduleData::Task task1, ScheduleData::Task task2) {
+                            return -gr[task1].deadline < 
+                                    -gr[task2].deadline;
+                        });
+                LOG_TRACE << "EST chosen " << chosen_task;
+            } else {
+                chosen_task = *std::max_element(D.begin(), D.end(),
+                        [&](ScheduleData::Task task1, ScheduleData::Task task2) {
+                            return -gr[task1].deadline -
+                                        sched.get_task_time(partitioning[task1], task1) < 
+                                    -gr[task2].deadline - 
+                                        sched.get_task_time(partitioning[task1], task2);
+                        });
+                LOG_TRACE << "EFT chosen " << chosen_task;
+            }
+            ScheduleData::Proc chosen_proc = partitioning[chosen_task];
+            res.add_task(chosen_task, chosen_proc);
+
+            sched.remove_vertex(chosen_task);
+            D = sched.progress_top_vertices(D, chosen_task);
+            if (it_counter % 100 == 0) {
+                auto ratio = it_counter / (double)it_counter_max;
+                if (ratio - last_ratio > 0.01) {
+                    LOG_DEBUG << "Progress: " << ratio * 100 << "%";
+                    LOG_DEBUG << "CR: " << res.calculate_CR()
+                            << "; CR2: " << res.calculate_CR2();
+                    last_ratio = ratio;
+                }
+            }
+            ++it_counter;
+        }
+    } else if (flag == "edfb_misf" || flag == "edff_misf") {
         std::set<ScheduleData::Task> QQQ;
         int length = sched.task_num;
         int previous_deadline = gr[order[0]].deadline - 1;

@@ -89,23 +89,8 @@ int main(int argc, char *argv[]) {
     std::string algo = vm["command"].as<std::string>();
     opts::base_config conf =
         opts::parse_base_config(vm["conf"].as<std::string>());
-    if (algo == "greedy") {
-        LOG_INFO << "Starting";
-        boost::timer::cpu_timer timer;
-        opts::greedy::ScheduleData schedule = opts::input_schedule_regular(
-            vm["input"].as<std::string>(), conf._class);
-        opts::greedy::TimeDiagram time_schedule =
-            opts::greedy::construct_time_schedule(schedule, conf);
-
-        auto algo_time = timer.elapsed();
-
-        LOG_INFO << "dumping to " << vm["output"].as<std::string>();
-
-        opts::Output_data out_data = time_schedule.extract_data(conf);
-        opts::dump_to_json(vm["output"].as<std::string>(), out_data,
-                           (algo_time.system + algo_time.user) / (uint64_t)1e6);
-        return 0;
-    } else if (algo == "edfbase" || algo == "edffollow" || algo == "edfb_misf" || algo == "edff_misf") {
+    if (algo == "greedy" || algo == "edfbase" || algo == "edffollow" || algo == "edfb_misf"
+                    || algo == "edff_misf" || algo == "est" || algo == "eft") {
         LOG_INFO << "Starting";
         boost::timer::cpu_timer timer;
         opts::greedy::ScheduleData schedule = opts::input_schedule_regular(
