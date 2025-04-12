@@ -8,23 +8,25 @@ from time import sleep
 #os.system(f"rm -rf scripts/edf_misf_layer_research")
 #os.system(f"mkdir scripts/{folder}")
 
-for based_on in [5, 10]:
+for based_on in [5, 10, 20, 30, 40, 50]:
     dataset = f"layer_class_1_based_on_{based_on}"
     folder = f"based_on_{based_on}_*"
+    cr_bound = 40
     for flag in ["greedy", "edfbase", "edffollow", "edfb_misf", "edff_misf", "est", "eft"]:
         for i in [5, 10, 20, 30, 40, 50]:
             os.system(f"mkdir scripts/{folder}")
+            os.system(f"mkdir scripts/{folder}/{cr_bound}")
             #os.system(f"rm -rf scripts/edf_misf_layer_research/{i}")
-            os.system(f"mkdir scripts/{folder}/{i}")
+            os.system(f"mkdir scripts/{folder}/{cr_bound}/{i}")
             for j in [500, 1000, 2000, 5000, 10000]:
                 #os.system(f"rm -rf scripts/edf_misf_layer_research/{i}/{j}")
-                os.system(f"mkdir scripts/{folder}/{i}/{j}")
-                os.system(f"build/opts --input ../{dataset}/{i}_{j}.in --output scripts/{folder}/{i}/{j}/{flag}.json --conf config.toml --command {flag} --random {i * 10 + j * 100}")
-                with open(f'scripts/{folder}/{i}/{j}/{flag}.json') as f:  
+                os.system(f"mkdir scripts/{folder}/{cr_bound}/{i}/{j}")
+                os.system(f"build/opts --input ../{dataset}/{i}_{j}.in --output scripts/{folder}/{cr_bound}/{i}/{j}/{flag}.json --conf config.toml --command {flag} --random {i * 10 + j * 100}")
+                with open(f'scripts/{folder}/{cr_bound}/{i}/{j}/{flag}.json') as f:  
                     data = json.loads(f.read())["time"]
-                with open(f"scripts/{folder}/{i}/{j}/result_{flag}.txt", "w") as f:
+                with open(f"scripts/{folder}/{cr_bound}/{i}/{j}/result_{flag}.txt", "w") as f:
                     f.write(str(data))
-                os.system(f"rm -rf scripts/{folder}/{i}/{j}/{flag}.json")
+                os.system(f"rm -rf scripts/{folder}/{cr_bound}/{i}/{j}/{flag}.json")
     """for i in [5, 10, 25, 50, 75, 100, 125, 150]:
     #for i in [25, 50, 75, 100, 125, 150]:
         #os.system(f"rm -rf scripts/edf_misf_layer_research/{i}")
