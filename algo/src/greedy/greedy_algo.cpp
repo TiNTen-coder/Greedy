@@ -149,8 +149,8 @@ TimeDiagram construct_time_schedule(ScheduleData &schedule,
     return time_schedule;
 }
 
-TimeDiagram greedy_EDF_heuristic(ScheduleData &sched, opts::base_config conf, std::string flag, int random_flag) {
-    BOOST_LOG_NAMED_SCOPE("greedy_EDF_heuristic");
+TimeDiagram heuristics(ScheduleData &sched, opts::base_config conf, std::string flag, int random_flag) {
+    BOOST_LOG_NAMED_SCOPE("heuristics");
     std::size_t right_border = 0;
     std::unordered_set<ScheduleData::Task> leaf_nodes;
 

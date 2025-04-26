@@ -96,7 +96,7 @@ int main(int argc, char *argv[]) {
         opts::greedy::ScheduleData schedule = opts::input_schedule_regular(
             vm["input"].as<std::string>(), conf._class);
         opts::greedy::TimeDiagram time_schedule =
-            opts::greedy::greedy_EDF_heuristic(schedule, conf, algo, vm["random"].as<int>());
+            opts::greedy::heuristics(schedule, conf, algo, vm["random"].as<int>());
 
         auto algo_time = timer.elapsed();
 
