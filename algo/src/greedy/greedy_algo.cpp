@@ -390,13 +390,13 @@ TimeDiagram heuristics(ScheduleData &sched, opts::base_config conf, std::string 
     std::size_t it_counter_max = sched.task_num;
     double last_ratio = it_counter / (double)it_counter_max;
 
-    if (flag == "greedy" || flag == "est" || flag == "eft") {
+    if (flag == "misf" || flag == "est" || flag == "eft") {
         auto D = sched.get_top_vertices();
         LOG_INFO << "D updated";
         BOOST_LOG_NAMED_SCOPE("algo");
         while (!D.empty()) {
             ScheduleData::Task chosen_task;
-            if (flag == "greedy") {
+            if (flag == "misf") {
                 chosen_task = sched.GC1(D);
                 LOG_TRACE << "GC1 chosen " << chosen_task;
             } else if (flag == "est") {

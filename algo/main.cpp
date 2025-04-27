@@ -89,7 +89,7 @@ int main(int argc, char *argv[]) {
     std::string algo = vm["command"].as<std::string>();
     opts::base_config conf =
         opts::parse_base_config(vm["conf"].as<std::string>());
-    if (algo == "greedy" || algo == "edfbase" || algo == "edffollow" || algo == "edfb_misf"
+    if (algo == "misf" || algo == "edfbase" || algo == "edffollow" || algo == "edfb_misf"
                     || algo == "edff_misf" || algo == "est" || algo == "eft") {
         LOG_INFO << "Starting";
         boost::timer::cpu_timer timer;
