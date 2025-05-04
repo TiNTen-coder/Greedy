@@ -35,6 +35,10 @@ doxygen Doxyfile
     1. `boost/lexical_cast`
 
 ## How to use it
+```bash
+cd algo
+```
+THAN
 
 ```bash
 python3 scripts/filename.py
