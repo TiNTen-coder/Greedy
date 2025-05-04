@@ -3,10 +3,7 @@
 ## Build
 
 ```bash
-mkdir build
-cd build
-cmake ..
-make
+bash compile.sh
 ```
 
 ## Build docs
@@ -40,23 +37,21 @@ doxygen Doxyfile
 ## How to use it
 
 ```bash
+python3 scripts/filename.py
+```
+
+or
+
+```bash
+build/opts 
+
 General options:
-  -h [ --help ]                 Print help
-  -i [ --input ] arg            Input file (or directory)
-  --criteria arg (=NO)          Extra criteria for time schedule (CR/BF/NO)
-  --class arg                   Class of input file (0/1/2)
-  -l [ --log ] arg (=debug)     Specify log level 
-                                0 - trace 
-                                1 - debug 
-                                2 - info 
-                                3 - warning 
-                                4 - error 
-                                5 - fatal 
-                                
-  -s [ --scheme ] arg (=access) GC2 scheme to use (simple/access)
-  -t [ --threshold ] arg (=0.5) Threshold for access scheme
-  --steps                       Dump steps as individual files
-  --cr_con                      Enable CR controlling GC1 at 0.3 threshold
+  --input                    Input dataset path
+  --output                   Output result path
+  --conf                     Configuration file path
+  --command                  Heuristic name
+  --random                   Random METIS flag
 
-
+Example:
+  --input ../{dataset}/{i}_{j}.in --output scripts/{folder}/{cr_bound}/{i}/{j}/{flag}.json --conf config.toml --command {flag} --random {i * 10 + j * 100}
 ```
