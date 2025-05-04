@@ -53,5 +53,5 @@ General options:
   --random                   Random METIS flag
 
 Example:
-  --input ../{dataset}/{i}_{j}.in --output scripts/{folder}/{cr_bound}/{i}/{j}/{flag}.json --conf config.toml --command {flag} --random {i * 10 + j * 100}
+  build/opts --input ../{dataset}/{i}_{j}.in --output scripts/{folder}/{cr_bound}/{i}/{j}/{flag}.json --conf config.toml --command {flag} --random {i * 10 + j * 100}
 ```
