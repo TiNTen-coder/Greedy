@@ -70,14 +70,22 @@ boost: stable 1.87.0 (bottled)
 ## Расположение входных данных и конфига
 
 layer_class_1-input - набор данных для разных слоистых графов
+
 layer_class_1_based_on_1 - набор данных для входного графа №1
+
 layer_class_1_based_on_2 - набор данных для входного графа №2
+
 layer_class_1_based_on_3 - набор данных для входного графа №3
+
 layer_class_1_based_on_4 - набор данных для входного графа №4
+
 layer_class_1_based_on_5 - набор данных для входного графа №5
+
 layer_class_1_based_on_6 - набор данных для входного графа №6
+
 ideal_1-input_for_PROGRAMMIR_greedy_paper - набор данных для графов с известным оптимумом
-algo/config.toml
+
+algo/config.toml - конфигурациионный файл проекта
 
 ## Описание выходных данных
 
