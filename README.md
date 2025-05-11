@@ -1,18 +1,22 @@
-# Code section
+# Операционная система
+Сборка проекта проводилась на операционной системе MacOS Sequoia 15.3
+Проект успешно собирается на операционной системе Linux Ubuntu 20.04 LTS
 
-## Build
+# Секция кода
+
+## Сборка
 
 ```bash
 bash compile.sh
 ```
 
-## Build docs
+## Сборка документации
 
 ```bash
 doxygen Doxyfile
 ```
 
-## All dependencies
+## Все зависимости
 
 1. `graph_partitioning`
 1. `json_dumper`
@@ -34,36 +38,36 @@ doxygen Doxyfile
     1. `boost/program_options`
     1. `boost/lexical_cast`
 
-## Datasets description
+## Описание входных данных
 
-Each dataset is described by the following parameters:
+Каждый файл входных данных описывается следующими параметрами: 
 
-- **N** — number of tasks  
-- **P** — number of processors  
-- **M** — number of edges in the task dependency graph
+- **N** — Количество работ
+- **P** — Количество процессоров  
+- **M** — Набор ребер в графе связей работ
 
-### Data Format
+### Формат входных данных
 
-1. **First line**:  
+1. **Первая строка**:  
    ```
    N  P  M
    ```
 
-2. **Next P lines** — each line contains N integers:  
-   Task execution costs for each of the N tasks on each of the P processors:  
+2. **Следующие *P* строк** — каждая строка содержит *N* чисел:
+3. Времена выполнения для каждой из *N* работ на каждом из *P* процессоров:  
    ```
    a₁  a₂  a₃  ...  aₙ
    ```
 
-3. **Adjacency matrix (P × P)** — transfer time between processors:  
-   `tᵢⱼ` represents the time to transfer data from processor *i* to processor *j*.  
-   Example:
+4. **Матрица смежности (P × P)** — время межпроцессорных передач данных:  
+   `tᵢⱼ` представляет время передачи данных с процессора *i* на процессор *j*.  
+   Пример:
    ```
    0 2 ...
    2 2 ...
    ```
 
-4. **Next M lines** — edges of the task dependency graph, one per line.
+5. **Следующие M строк** — вершины, связанные ребрами в графе, по одной в строке.
 
 ---
 
