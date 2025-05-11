@@ -164,19 +164,3 @@ build/sched --input ../layer_class_1_based_on_1/5_500.in --output ../outputdir/o
 ```bash
 python3 scripts/catplots_for_vkr.py
 ```
-
-or
-
-```bash
-build/sched 
-```
-
-
-### Example:
-```bash
-build/sched --input ../{dataset}/{i}_{j}.in \
-           --output scripts/{folder}/{cr_bound}/{i}/{j}/{flag}.json \
-           --conf config.toml \
-           --command {flag} \
-           --random $((i * 10 + j * 100))
-```
