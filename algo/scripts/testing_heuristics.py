@@ -15,9 +15,9 @@ os.system("mkdir scripts/edfbase")
 gc1, edfbase, edffollow = [], [], []
 bottom = [40000, 50000, 75000, 100000]
 for j in bottom:
-    os.system(f"build/opts --input ../ideal_1-input_for_PROGRAMMIR_greedy_paper/125_{j}.in --output scripts/gc1/125_{j}.json --conf config.toml --command greedy")
-    os.system(f"build/opts --input ../ideal_1-input_for_PROGRAMMIR_greedy_paper/125_{j}.in --output scripts/edfbase/125_{j}.json --conf config.toml --command edfbase")
-    os.system(f"build/opts --input ../ideal_1-input_for_PROGRAMMIR_greedy_paper/125_{j}.in --output scripts/edffollow/125_{j}.json --conf config.toml --command edffollow")
+    os.system(f"build/sched --input ../ideal_1-input_for_PROGRAMMIR_greedy_paper/125_{j}.in --output scripts/gc1/125_{j}.json --conf config.toml --command greedy")
+    os.system(f"build/sched --input ../ideal_1-input_for_PROGRAMMIR_greedy_paper/125_{j}.in --output scripts/edfbase/125_{j}.json --conf config.toml --command edfbase")
+    os.system(f"build/sched --input ../ideal_1-input_for_PROGRAMMIR_greedy_paper/125_{j}.in --output scripts/edffollow/125_{j}.json --conf config.toml --command edffollow")
     with open(f'scripts/gc1/125_{j}.json') as f:
         s = json.loads(f.read())
         gc1.append(s['time'])

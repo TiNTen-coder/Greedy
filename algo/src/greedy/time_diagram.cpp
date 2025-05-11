@@ -1,5 +1,5 @@
-#include "OPTS/greedy/time_diagram.hpp"
-#include "OPTS/logger_config.hpp"
+#include "SCHED/greedy/time_diagram.hpp"
+#include "SCHED/logger_config.hpp"
 
 #include <algorithm>
 #include <iostream>
@@ -8,7 +8,7 @@
 #include <boost/iterator/counting_iterator.hpp>
 #include <boost/range/combine.hpp>
 
-namespace opts {
+namespace sched {
 namespace greedy {
 
 TimeDiagram::TimeDiagram(const ScheduleData &schedule, std::size_t proc_num)
@@ -215,7 +215,7 @@ std::vector<TimeDiagram::proc_info> &TimeDiagram::get_schedule() {
     return proc_array;
 }
 
-Output_data TimeDiagram::extract_data(const opts::base_config &conf) const {
+Output_data TimeDiagram::extract_data(const sched::base_config &conf) const {
     Output_data res;
     res.CR = calculate_CR();
     res.CR2 = calculate_CR2();
@@ -231,4 +231,4 @@ Output_data TimeDiagram::extract_data(const opts::base_config &conf) const {
 }
 
 } // namespace greedy
-} // namespace opts
+} // namespace sched

@@ -2,10 +2,10 @@
 #include <boost/lexical_cast.hpp>
 #include <fstream>
 
-#include "OPTS/json_dumper.hpp"
+#include "SCHED/json_dumper.hpp"
 #include "nlohmann/json.hpp"
 
-namespace opts {
+namespace sched {
 
 void dump_to_json(const std::string &filename, const Output_data &out_data,
                   int64_t exec_time) {
@@ -43,4 +43,4 @@ void dump_to_json(const std::string &filename, const Output_data &out_data,
     outfile << root;
     outfile.close();
 }
-} // namespace opts
+} // namespace sched

@@ -1,6 +1,6 @@
-#include "OPTS/huawei_parser.hpp"
-#include "OPTS/logger_config.hpp"
-#include "OPTS/options.hpp"
+#include "SCHED/parser.hpp"
+#include "SCHED/logger_config.hpp"
+#include "SCHED/options.hpp"
 
 #include <boost/numeric/ublas/io.hpp>
 #include <boost/numeric/ublas/matrix.hpp>
@@ -8,10 +8,10 @@
 #include <filesystem>
 #include <fstream>
 
-namespace opts {
+namespace sched {
 
 greedy::ScheduleData input_schedule_regular(std::string path,
-                                        opts::input_class inp_class) {
+                                        sched::input_class inp_class) {
     std::filesystem::path p(path);
     if (!std::filesystem::is_regular_file(p)) {
         throw std::runtime_error(
@@ -24,7 +24,7 @@ greedy::ScheduleData input_schedule_regular(std::string path,
     int task_num, proc_num, edge_num;
     input >> task_num >> proc_num >> edge_num;
     boost::numeric::ublas::matrix<std::size_t> task_time;
-    if (inp_class == opts::input_class::class_2) {
+    if (inp_class == sched::input_class::class_2) {
         std::size_t time;
         input >> time;
         task_time =
@@ -54,4 +54,4 @@ greedy::ScheduleData input_schedule_regular(std::string path,
     return greedy::ScheduleData(edges, task_time, tran_time);
 }
 
-} // namespace opts
+} // namespace sched

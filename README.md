@@ -30,6 +30,11 @@ brew install boost
 
 boost: stable 1.87.0 (bottled)
 
+Прочие зависимости:
+
+1. METIS 5.0.0
+
+2. json 3.12.0
 
 ## Описание входных данных
 
@@ -62,53 +67,114 @@ boost: stable 1.87.0 (bottled)
 
 5. **Следующие M строк** — вершины, связанные ребрами в графе, по одной в строке.
 
+## Расположение входных данных и конфига
+
+layer_class_1-input - набор данных для разных слоистых графов
+layer_class_1_based_on_1 - набор данных для входного графа №1
+layer_class_1_based_on_2 - набор данных для входного графа №2
+layer_class_1_based_on_3 - набор данных для входного графа №3
+layer_class_1_based_on_4 - набор данных для входного графа №4
+layer_class_1_based_on_5 - набор данных для входного графа №5
+layer_class_1_based_on_6 - набор данных для входного графа №6
+ideal_1-input_for_PROGRAMMIR_greedy_paper - набор данных для графов с известным оптимумом
+algo/config.toml
+
+## Описание выходных данных
+
+1. **CR**
+
+Доля межпроцессорных передач в построенному расписании.
+
+2. **algo_time**
+
+Время работы алгоритма построения расписания.
+
+3. **nodes**
+
+Количество ребер графа.
+
+4. **procs**
+
+Построенное расписание. Для каждого процессора указаны работы, расположенные на него.
+
+5. **start_time**
+
+Время начала построения расписания.
+
+6. **time**
+
+Длительность построенного расписания.
+
 ---
 
 ## Использование и запуск
+
+# Наименования эвристик
+
+1. misf
+2. edfbase
+3. edffollow
+4. edfb_misf
+5. edff_misf
+6. est
+7. eft
 
 Запуск одного эксперимента:
 
 Сборка проекта:
 
 ```bash
+cd algo
 bash compile.sh
 ```
 
-Запуск бинарного файла
+Пример запуска одного эксперимента:
 
 ```bash
-build/opts 
+build/sched --input ../layer_class_1_based_on_1/5_500.in --output ../outputdir/output.json --conf config.toml --command misf --random 1234
 ```
 
-
-```bash
-cd algo
+### Основные операции:
+```
+  --input                    путь входного файла
+  --output                   путь результирующего JSON-файла
+  --conf                     путь к конфигурационному файлу
+  --command                  название эвристики
+  --random                   seed для фиксации рандомизации METIS
 ```
 
-Then:
+# Запуск серии экспериментов
+
+Серии экспериментов запускаются с использованием скриптов, находящихся в algo/scripts
+
+# Описание скриптов
+
+1. **3d_graph.py** - построение 3D графика
+
+2. **catplot.py** и **catplots_for_vkr.py** - построение графиков-диаграмм, как в ВКР
+
+3. **create_graphics_ideal_hybrid_research.py** и **graph.py** - проведение экспериментов и построение графиков для графов с известным оптимумом
+
+4. **heatmap.py** - построение тепловой карты
+
+5. **hybrid.py** - запуск экспериментов для всех эквристик
+
+# Пример запуска серии экспериментов
 
 ```bash
-python3 scripts/filename.py
+python3 scripts/catplots_for_vkr.py
 ```
 
 or
 
 ```bash
-build/opts 
+build/sched 
 ```
 
-### General options:
-```
-  --input                    Input dataset path
-  --output                   Output result path
-  --conf                     Configuration file path
-  --command                  Heuristic name
-  --random                   Random METIS flag
-```
 
 ### Example:
 ```bash
-build/opts --input ../{dataset}/{i}_{j}.in \
+build/sched --input ../{dataset}/{i}_{j}.in \
            --output scripts/{folder}/{cr_bound}/{i}/{j}/{flag}.json \
            --conf config.toml \
            --command {flag} \

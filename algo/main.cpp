@@ -4,11 +4,11 @@
 #include <boost/program_options.hpp>
 #include <boost/timer/timer.hpp>
 
-#include "OPTS/greedy/greedy_algo.hpp"
-#include "OPTS/huawei_parser.hpp"
-#include "OPTS/json_dumper.hpp"
-#include "OPTS/logger_config.hpp"
-#include "OPTS/options.hpp"
+#include "SCHED/greedy/greedy_algo.hpp"
+#include "SCHED/parser.hpp"
+#include "SCHED/json_dumper.hpp"
+#include "SCHED/logger_config.hpp"
+#include "SCHED/options.hpp"
 
 #include <algorithm>
 #include <chrono>
@@ -85,25 +85,25 @@ int main(int argc, char *argv[]) {
     boost::program_options::store(parsed, vm);
     boost::program_options::notify(vm);
 
-    opts::init(vm["log"].as<boost::log::trivial::severity_level>());
+    sched::init(vm["log"].as<boost::log::trivial::severity_level>());
     std::string algo = vm["command"].as<std::string>();
-    opts::base_config conf =
-        opts::parse_base_config(vm["conf"].as<std::string>());
+    sched::base_config conf =
+        sched::parse_base_config(vm["conf"].as<std::string>());
     if (algo == "misf" || algo == "edfbase" || algo == "edffollow" || algo == "edfb_misf"
                     || algo == "edff_misf" || algo == "est" || algo == "eft") {
         LOG_INFO << "Starting";
         boost::timer::cpu_timer timer;
-        opts::greedy::ScheduleData schedule = opts::input_schedule_regular(
+        sched::greedy::ScheduleData schedule = sched::input_schedule_regular(
             vm["input"].as<std::string>(), conf._class);
-        opts::greedy::TimeDiagram time_schedule =
-            opts::greedy::heuristics(schedule, conf, algo, vm["random"].as<int>());
+        sched::greedy::TimeDiagram time_schedule =
+            sched::greedy::heuristics(schedule, conf, algo, vm["random"].as<int>());
 
         auto algo_time = timer.elapsed();
 
         LOG_INFO << "dumping to " << vm["output"].as<std::string>();
 
-        opts::Output_data out_data = time_schedule.extract_data(conf);
-        opts::dump_to_json(vm["output"].as<std::string>(), out_data,
+        sched::Output_data out_data = time_schedule.extract_data(conf);
+        sched::dump_to_json(vm["output"].as<std::string>(), out_data,
                            (algo_time.system + algo_time.user) / (uint64_t)1e6);
         return 0;
     } else {

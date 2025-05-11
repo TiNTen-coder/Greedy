@@ -1,5 +1,5 @@
-#include "OPTS/greedy/schedule_data.hpp"
-#include "OPTS/logger_config.hpp"
+#include "SCHED/greedy/schedule_data.hpp"
+#include "SCHED/logger_config.hpp"
 
 #include <boost/graph/dijkstra_shortest_paths.hpp>
 #include <boost/graph/graph_traits.hpp>
@@ -10,7 +10,7 @@
 #include <algorithm>
 #include <iostream>
 
-namespace opts {
+namespace sched {
 namespace greedy {
 
 ScheduleData::ScheduleData(std::vector<Edge> &edge_vec,
@@ -220,4 +220,4 @@ std::size_t ScheduleData::get_in_degree(const Task &task) const {
 }
 
 } // namespace greedy
-} // namespace opts
+} // namespace sched

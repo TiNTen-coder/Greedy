@@ -30,5 +30,5 @@ include_directories(external/toml11/toml)
 add_library(scheduling ${SOURCES})
 target_link_libraries(scheduling Boost::log nlohmann_json toml11 metis)
 
-add_executable(opts main.cpp)
-target_link_libraries(opts scheduling Boost::program_options Boost::timer)
+add_executable(sched main.cpp)
+target_link_libraries(sched scheduling Boost::program_options Boost::timer)

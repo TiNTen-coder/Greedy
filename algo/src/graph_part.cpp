@@ -4,10 +4,10 @@
 #include <vector>
 #include <time.h>
 
-#include "OPTS/graph_part.hpp"
-#include "OPTS/logger_config.hpp"
+#include "SCHED/graph_part.hpp"
+#include "SCHED/logger_config.hpp"
 
-namespace opts {
+namespace sched {
 
 /**
  * @brief Calculate `BF` values on a partitioning
@@ -149,7 +149,7 @@ flatten_partition(const std::vector<parted_proc> &deep_partition,
 std::vector<std::size_t>
 local_partition_optimization(const std::vector<std::size_t> &partition,
                              const greedy::ScheduleData &data,
-                             const opts::base_config &conf) {
+                             const sched::base_config &conf) {
     BOOST_LOG_NAMED_SCOPE("local_partition_optimization");
     std::vector<parted_proc> proc_loads(data.proc_num);
     for (int i = 0; i < partition.size(); ++i) {
@@ -252,4 +252,4 @@ local_partition_optimization(const std::vector<std::size_t> &partition,
     return flatten_partition(proc_loads, data.task_num);
 }
 
-} // namespace opts
+} // namespace sched

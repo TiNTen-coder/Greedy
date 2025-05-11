@@ -1,12 +1,12 @@
-#include "OPTS/logger_config.hpp"
+#include "SCHED/logger_config.hpp"
 
-namespace opts {
+namespace sched {
 
 boost::log::sources::severity_logger<boost::log::trivial::severity_level> log;
 
 void init(boost::log::trivial::severity_level level) {
     boost::log::add_common_attributes();
-    opts::log.add_attribute("Scope", boost::log::attributes::named_scope());
+    sched::log.add_attribute("Scope", boost::log::attributes::named_scope());
 
     boost::log::core::get()->set_filter(boost::log::trivial::severity >= level);
     auto fmtTimeStamp =
@@ -33,4 +33,4 @@ void init(boost::log::trivial::severity_level level) {
     file_sink->set_formatter(logFmt);
 }
 
-} // namespace opts
+} // namespace sched

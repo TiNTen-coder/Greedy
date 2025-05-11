@@ -1,9 +1,9 @@
-#include "OPTS/options.hpp"
+#include "SCHED/options.hpp"
 #include "toml.hpp"
 
 #include <boost/describe/enum_from_string.hpp>
 
-namespace opts {
+namespace sched {
 
 /**
  * @brief Parse base config.
@@ -24,4 +24,4 @@ base_config parse_base_config(std::string filename) {
     return res;
 }
 
-} // namespace opts
+} // namespace sched

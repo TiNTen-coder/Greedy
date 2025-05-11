@@ -1,18 +1,18 @@
-#include "OPTS/graph_part.hpp"
-#include "OPTS/huawei_parser.hpp"
-#include "OPTS/json_dumper.hpp"
-#include "OPTS/logger_config.hpp"
+#include "SCHED/graph_part.hpp"
+#include "SCHED/parser.hpp"
+#include "SCHED/json_dumper.hpp"
+#include "SCHED/logger_config.hpp"
 
 #include <boost/describe/enum_to_string.hpp>
 #include <boost/graph/graphviz.hpp>
 #include <boost/numeric/ublas/matrix_proxy.hpp>
 #include <numeric>
 
-namespace opts {
+namespace sched {
 namespace greedy {
 
 TimeDiagram construct_time_schedule(ScheduleData &schedule,
-                                     opts::base_config conf) {
+                                     sched::base_config conf) {
     TimeDiagram time_schedule(schedule, schedule.proc_num);
 
     auto D = schedule.get_top_vertices();
@@ -149,7 +149,7 @@ TimeDiagram construct_time_schedule(ScheduleData &schedule,
     return time_schedule;
 }
 
-TimeDiagram heuristics(ScheduleData &sched, opts::base_config conf, std::string flag, int random_flag) {
+TimeDiagram heuristics(ScheduleData &sched, sched::base_config conf, std::string flag, int random_flag) {
     BOOST_LOG_NAMED_SCOPE("heuristics");
     std::size_t right_border = 0;
     std::unordered_set<ScheduleData::Task> leaf_nodes;
@@ -499,4 +499,4 @@ TimeDiagram heuristics(ScheduleData &sched, opts::base_config conf, std::string 
 }
 
 } // namespace greedy
-} // namespace opts
+} // namespace sched

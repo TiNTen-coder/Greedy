@@ -9,7 +9,7 @@ for i in [5, 10, 20, 30, 40, 50]:
         #os.system(f"mkdir scripts/edffollow_layer_research/{i}/{j}")
         times = []
         for round_ in range(1, 21):
-            os.system(f"build/opts --input ../layer_class_1-input/{i}_{j}.in --output scripts/edffollow_layer_research/{i}/{j}/{flag}_{round_}.json --conf config.toml --command {flag} --random {i * 10 + j * 100 + round_}")
+            os.system(f"build/sched --input ../layer_class_1-input/{i}_{j}.in --output scripts/edffollow_layer_research/{i}/{j}/{flag}_{round_}.json --conf config.toml --command {flag} --random {i * 10 + j * 100 + round_}")
             with open(f'scripts/edffollow_layer_research/{i}/{j}/{flag}_{round_}.json') as f:  
                 data = json.loads(f.read())
                 times.append(data["time"])
