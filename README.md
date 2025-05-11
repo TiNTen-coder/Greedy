@@ -1,5 +1,6 @@
 # Операционная система
 Сборка проекта проводилась на операционной системе MacOS Sequoia 15.3
+
 Проект успешно собирается на операционной системе Linux Ubuntu 20.04 LTS
 
 # Секция кода
@@ -17,26 +18,18 @@ doxygen Doxyfile
 ```
 
 ## Все зависимости
+Для сборки проекта необходима библиотека boost.
 
-1. `graph_partitioning`
-1. `json_dumper`
-    1. `nlohmann/json` - bundled
-    1. `boost/lexical_cast`
-1. `logging`
-    1. `boost/log`
-1. `parser`
-    1. `boost/numeric`
-1. `schedule`
-    1. `boost/numeric`
-    1. `boost/graph`
-    1. `boost/property_map`
-1. `time_schedule`
-    1. `boost/numeric`
-    1. `boost/iterator`
-    1. `boost/range`
-1. `main.cpp`
-    1. `boost/program_options`
-    1. `boost/lexical_cast`
+Установка на MacOS
+
+```bash
+brew install boost
+```
+
+Используемая в проекте версия:
+
+boost: stable 1.87.0 (bottled)
+
 
 ## Описание входных данных
 
@@ -71,7 +64,22 @@ doxygen Doxyfile
 
 ---
 
-## How to use it
+## Использование и запуск
+
+Запуск одного эксперимента:
+
+Сборка проекта:
+
+```bash
+bash compile.sh
+```
+
+Запуск бинарного файла
+
+```bash
+build/opts 
+```
+
 
 ```bash
 cd algo
