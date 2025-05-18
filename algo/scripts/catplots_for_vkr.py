@@ -45,36 +45,16 @@ for i in processors_count:
                 group.append([misf, eft, est, edfbase, edfb_misf, edffollow, edff_misf])
             data.append(group)
 
-        average = {
-            "20": {_: 0 for _ in ["misf", "eft", "est", "edfbase", "edfb_misf", "edffollow", "edff_misf"]},
-            "40": {_: 0 for _ in ["misf", "eft", "est", "edfbase", "edfb_misf", "edffollow", "edff_misf"]},
-            "60": {_: 0 for _ in ["misf", "eft", "est", "edfbase", "edfb_misf", "edffollow", "edff_misf"]},
-            "80": {_: 0 for _ in ["misf", "eft", "est", "edfbase", "edfb_misf", "edffollow", "edff_misf"]}
-        }
-        cccc = ["20", "40", "60", "80"]
-        heuristicsss = ["misf", "eft", "est", "edfbase", "edfb_misf", "edffollow", "edff_misf"]
-        for xxx in data:
-            for yyy in range(len(xxx)):
-                for zzz in range(len(xxx[yyy])):
-                    average[cccc[yyy]][heuristicsss[zzz]] += xxx[yyy][zzz][0]
-        group = []
-        for xxx in range(len(cccc)):
-            average_data = []
-            for yyy in range(len(heuristicsss)):
-                average_data.append([average[cccc[xxx]][heuristicsss[yyy]] / len(data)])
-            group.append(average_data)
-        data.append(group)
-
         # Построение
         fig, ax = plt.subplots(figsize=(18, 7))  # увеличено
 
         x_labels = []
         x_ticks = []
 
-        bar_width = 0.01
-        bar_gap = 0.005
-        group_spacing = 0.565
-        cr_spacing = 0.13
+        bar_width = 0.016
+        bar_gap = 0.006
+        group_spacing = 0.75
+        cr_spacing = 0.18
 
         for group_idx, group in enumerate(data):
             group_base_x = group_idx * group_spacing
@@ -96,18 +76,18 @@ for i in processors_count:
         ax.grid(axis='y', linestyle='--', alpha=0.5)
 
         # Подписи CR
-        for group_idx in range(len(processors_count) + 1):
+        for group_idx in range(len(processors_count)):
             group_base_x = group_idx * group_spacing
             for xxx, cr in enumerate(cr_limits):
                 cr_base_x = group_base_x + xxx * cr_spacing
                 ax.text(cr_base_x + 3 * (bar_width + bar_gap), 0.735, f"{cr}", ha='center')
 
-        for center, count in zip(xtick_positions, list(range(1, len(processors_count) + 1)) + ["среднее"]):
-            ax.text(center + 0.05, 0.725, f"{count}", ha='center', va='top', fontsize=14)
+        for center, count in zip(xtick_positions, list(range(1, len(processors_count) + 1))):
+            ax.text(center + 0.064, 0.725, f"{count}", ha='center', va='top', fontsize=14)
 
 
         # Подпись оси X
-        ax.text((len(processors_count) + 1) / 2 - 1.58, 0.71, "НОМЕР ГРАФА; ОГРАНИЧЕНИЕ НА CR", 
+        ax.text(len(processors_count) / 2 - 0.8, 0.71, "НОМЕР ГРАФА; ОГРАНИЧЕНИЕ НА CR", 
                 ha='center', va='top')
 
         # Легенда
@@ -129,5 +109,5 @@ for i in processors_count:
 
         plt.tight_layout()
         plt.subplots_adjust(bottom=0.32)  # добавлен дополнительный отступ
-        plt.savefig(f"scripts/new_histplots/{i}_{j}.png")
+        plt.savefig(f"scripts/histplots_for_vkr/{i}_{j}.png")
         #plt.show()
